@@ -63,6 +63,8 @@ jobs:
           VERSION=$(grep '^version=' version.properties | cut -d'=' -f2)
           echo $VERSION
 
+      - run: |
+          ls -R build/libs
       - name: Rename binaries
         run: |
           mkdir ./binaries
