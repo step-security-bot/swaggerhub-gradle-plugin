@@ -37,47 +37,47 @@ spotless {
     }
 }
 
-import java.nio.file.Files
-import java.nio.file.Paths
+def versionFile = file("version.properties")
 
-// Funktion zum Lesen und Erhöhen der Version
-def incrementVersion() {
-    def versionFile = file("$rootDir/version.txt")
-
+// Lese die aktuelle Version aus der Datei
+def getVersionFromFile = {
     if (!versionFile.exists()) {
-        versionFile.text = "1.0.0"
+        return "2.0.0"
     }
-
-    def currentVersion = versionFile.text.trim()
-    def versionParts = currentVersion.split("\\.").collect { it.toInteger() }
-
-    if (versionParts.size() == 3) {
-        versionParts[2]++ // Patch-Version erhöhen
-    } else {
-        throw new GradleException("Ungültiges Versionsformat in version.txt")
-    }
-
-    def newVersion = versionParts.join(".")
-    versionFile.text = newVersion
-
-    return newVersion
+    def properties = new Properties()
+    versionFile.withInputStream { properties.load(it) }
+    return properties.getProperty("version", "2.0.0")
 }
 
-// Setze die Version aus der Datei und erhöhe sie automatisch
-def projectVersion = incrementVersion()
-version = projectVersion
+// Version hochzählen
+def incrementVersion = { version ->
+    def parts = version.tokenize('.')
+    if (parts.size() < 3) return "2.0.0" // Falls defekt, Standard setzen
+    def patch = parts[2].toInteger() + 1
+    return "${parts[0]}.${parts[1]}.${patch}"
+}
+
+// Schreibe die neue Version zurück in die Datei
+def setVersionToFile = { newVersion ->
+    def properties = new Properties()
+    properties.setProperty("version", newVersion)
+    versionFile.withWriter { writer -> properties.store(writer, null) }
+}
+
+version = getVersionFromFile()
 group = 'io.swagger.v2'
 
-// Zeige die neue Version nach dem Build
-task showVersion {
+tasks.register("incrementVersion") {
     doLast {
-        println "Neue Version: $projectVersion"
+        def newVersion = incrementVersion(version)
+        setVersionToFile(newVersion)
+        println "Neue Version: $newVersion"
     }
 }
 
-// Stelle sicher, dass die Versionsnummer immer vor dem Build erhöht wird
+// Erhöhe die Version nach einem erfolgreichen Build
 tasks.named("build") {
-    dependsOn showVersion
+    finalizedBy("incrementVersion")
 }
 
 tasks.withType(JavaCompile).configureEach {
