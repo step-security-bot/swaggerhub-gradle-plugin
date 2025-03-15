@@ -68,7 +68,7 @@ jobs:
       - name: Rename binaries
         run: |
           mkdir ./binaries
-          mv "./build/libs/swaggerhub ${{ needs.read_versions.outputs.version }}.jar" ./binaries/swaggerhub-${{ needs.read_versions.outputs.version }}.jar
+          mv "./build/libs/swaggerhub V2${{ needs.read_versions.outputs.version }}.jar" ./binaries/swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
@@ -107,20 +107,20 @@ jobs:
           cosign sign-blob \
             --key ./cosign.key \
             --yes \
-            --output-signature ./swaggerhub-${{ needs.read_versions.outputs.version }}.jar.sig \
-            ./swaggerhub-${{ needs.read_versions.outputs.version }}.jar
+            --output-signature ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar.sig \
+            ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar
 
           cosign attest-blob \
             --predicate - \
             --key ./cosign.key \
             --yes \
-            --output-attestation ./swaggerhub-${{ needs.read_versions.outputs.version }}.jar.intoto.jsonl \
-            ./swaggerhub-${{ needs.read_versions.outputs.version }}.jar
+            --output-attestation ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar.intoto.jsonl \
+            ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar
 
           cosign verify-blob \
             --key ./cosign.pub \
-            --signature ./swaggerhub-${{ needs.read_versions.outputs.version }}.jar.sig \
-            ./swaggerhub-${{ needs.read_versions.outputs.version }}.jar
+            --signature ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar.sig \
+            ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -132,7 +132,7 @@ jobs:
           if-no-files-found: error
           name: jar-signed
           path: |
-            ./swaggerhub-${{ needs.read_versions.outputs.version }}.*
+            ./swaggerhub-V2-${{ needs.read_versions.outputs.version }}.*
             !cosign.*
 
   create-release:
