@@ -66,7 +66,7 @@ jobs:
       - name: Rename binaries
         run: |
           mkdir ./binaries
-          mv "./build/libs/swaggerhub*.jar" ./binaries/swaggerhub-${{ needs.read_versions.outputs.version }}.jar
+          mv "./build/libs/swaggerhub ${{ needs.read_versions.outputs.version }}.jar" ./binaries/swaggerhub-${{ needs.read_versions.outputs.version }}.jar
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
