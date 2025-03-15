@@ -49,4 +49,4 @@ jobs:
             build/reports/problems/
             build/reports/tests/
             build/test-results/
-          retention-days: 3
+          retention-days: 1
