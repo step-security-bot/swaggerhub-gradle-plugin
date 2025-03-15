@@ -56,6 +56,13 @@ jobs:
       - name: Generate jar
         run: ./gradlew clean build
 
+      # Get version number
+      - name: Get version number
+        id: versionNumber
+        run: |
+          VERSION=$(cat version.txt)
+          echo $VERSION
+
       - name: Rename binaries
         run: |
           mkdir ./binaries
