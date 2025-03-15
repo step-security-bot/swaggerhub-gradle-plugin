@@ -8,13 +8,13 @@ updates:
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "dayly"
+      interval: "daily"
     open-pull-requests-limit: 500
     rebase-strategy: "auto"
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "dayly"
+      interval: "daily"
     open-pull-requests-limit: 500
     rebase-strategy: "auto"
