@@ -1,0 +1,91 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id "com.diffplug.spotless" version "7.0.2"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "org.apache.commons:commons-lang3:3.17.0"
+    testImplementation 'com.github.tomakehurst:wiremock-jre8-standalone:3.0.1'
+    testImplementation gradleTestKit()
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'io.swagger:swagger-parser:1.0.73'
+	compileOnly 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.36'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+}
+
+spotless {
+    java {
+        target project.fileTree('src').include('**/*.java')
+
+        googleJavaFormat("1.25.2").aosp().reorderImports(false)
+
+        importOrder("java", "javax", "org", "com", "net", "io", "jakarta", "lombok", "me", "stirling")
+        toggleOffOn()
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+        endWithNewline()
+    }
+}
+
+import java.nio.file.Files
+import java.nio.file.Paths
+
+// Funktion zum Lesen und Erhöhen der Version
+def incrementVersion() {
+    def versionFile = file("$rootDir/version.txt")
+
+    if (!versionFile.exists()) {
+        versionFile.text = "1.0.0"
+    }
+
+    def currentVersion = versionFile.text.trim()
+    def versionParts = currentVersion.split("\\.").collect { it.toInteger() }
+
+    if (versionParts.size() == 3) {
+        versionParts[2]++ // Patch-Version erhöhen
+    } else {
+        throw new GradleException("Ungültiges Versionsformat in version.txt")
+    }
+
+    def newVersion = versionParts.join(".")
+    versionFile.text = newVersion
+
+    return newVersion
+}
+
+// Setze die Version aus der Datei und erhöhe sie automatisch
+def projectVersion = incrementVersion()
+version = projectVersion
+group = 'io.swagger.v2'
+
+// Zeige die neue Version nach dem Build
+task showVersion {
+    doLast {
+        println "Neue Version: $projectVersion"
+    }
+}
+
+// Stelle sicher, dass die Versionsnummer immer vor dem Build erhöht wird
+tasks.named("build") {
+    dependsOn showVersion
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    dependsOn "spotlessApply"
+}
+
+tasks.wrapper {
+    gradleVersion = "8.12"
+    distributionType = Wrapper.DistributionType.ALL
+}
