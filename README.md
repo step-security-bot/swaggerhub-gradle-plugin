@@ -46,12 +46,14 @@ buildscript {
         }
     }
     dependencies {
-        classpath name: 'swaggerhub V2-2.0.13'
+        classpath name: 'swaggerhub V2-2.0.84'
     }
 }
+
 plugins {
-    // id "io.swagger.swaggerhub" version "1.1.0"
+    id 'java'
 }
+
 apply plugin: 'io.swagger.swaggerhub.v2'
 ```
 
@@ -145,15 +147,15 @@ buildscript {
         }
     }
     dependencies {
-        classpath name: 'swaggerhub V2-2.0.13'
+        classpath name: 'swaggerhub V2-2.0.84'
     }
 }
+
 plugins {
-    ...
     id 'java'
     id "io.swagger.core.v3.swagger-gradle-plugin" version '2.0.6'
-    // id "io.swagger.swaggerhub" version "1.0.1"
 }
+
 apply plugin: 'io.swagger.swaggerhub.v2'
 
 resolve {
@@ -198,11 +200,22 @@ swaggerhubUpload {
 ### new in Version 2
 
 ```gradle
+buildscript {
+    repositories {
+        flatDir {
+            dirs "libs"
+        }
+    }
+    dependencies {
+        classpath name: "swaggerhub-V2-2.0.84"
+    }
+}
+
 plugins {
     id 'java'
-    id "io.swagger.core.v3.swagger-gradle-plugin" version '2.0.6'
-    id "io.swagger.swaggerhub" version "1.0.1"
 }
+
+apply plugin: "io.swagger.swaggerhub.v2"
 
 swaggerhubSetDefaultVersion {
     api 'PetStoreAPI'
