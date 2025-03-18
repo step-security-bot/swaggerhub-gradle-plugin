@@ -46,7 +46,7 @@ jobs:
           cache: 'pip' # caching pip dependencies
       - name: Run Pre-Commit Hooks
         run: |
-          pip install --require-hashes -r ./.github/scripts/requirements_pre_commit.txt
+          pip install --require-hashes -r ./requirements.txt
       - run: pre-commit run --all-files -c .pre-commit-config.yaml
         continue-on-error: true
       - name: Set up git config
