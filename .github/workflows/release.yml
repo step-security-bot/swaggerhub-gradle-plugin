@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
     release:
       types: [created]
-  
+
 permissions:
     contents: read
 
@@ -68,7 +68,7 @@ jobs:
       - name: Rename binaries
         run: |
           mkdir ./binaries
-          mv "./build/libs/swaggerhub V2-${{ needs.read_versions.outputs.version }}.jar" ./binaries/swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar
+          mv "./build/libs/swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar" ./binaries/swaggerhub-V2-${{ needs.read_versions.outputs.version }}.jar
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
